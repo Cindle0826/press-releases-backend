@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.presses.mapper.SideMenuMapper">
+    
+    <resultMap id="sideMenuMap" type="com.presses.pojo.SideMenu">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="url" column="url"/>
+        <result property="page_permission" column="page_permission"/>
+
+        <collection property="children" 
+                    ofType="com.presses.pojo.SideMenu$SideMenuChildren"
+                    resultMap="sideMenuMapChildren" />
+    </resultMap>
+    
+    <resultMap id="sideMenuMapChildren" type="com.presses.pojo.SideMenu$SideMenuChildren">
+        <id property="id" column="children_id" />
+        <id property="name" column="children_name" />
+        <id property="url" column="children_url" />
+        <id property="sideMenuId" column="sideMenuID" />
+    </resultMap>
+
+    <select id="findSideMenuAll" resultMap="sideMenuMap">
+        SELECT
+            A.id,
+            A.name,
+            A.url,
+            A.page_permission,
+            B.id children_id,
+            B.name children_name,
+            B.url children_url,
+            B.sideMenuID
+        FROM
+            press_releases.sidemenu AS A
+        LEFT JOIN press_releases.sidemenuchildren AS B ON A.id = B.sideMenuID
+    </select>
+</mapper>
